@@ -1,7 +1,8 @@
 class RecipeCard extends HTMLElement {
   constructor() {
     // Part 1 Expose - TODO
-
+    super();
+    let shadow = this.attachShadow({mode: 'open'});
     // You'll want to attach the shadow DOM here
   }
 
@@ -87,6 +88,70 @@ class RecipeCard extends HTMLElement {
 
     // Here's the root element that you'll want to attach all of your other elements to
     const card = document.createElement('article');
+    const name = searchForKey(data, 'headline');
+
+    const image = document.createElement('img');
+    const picture = searchForKey(data, 'thumbnailUrl');
+    image.setAttribute('src', picture);
+    image.setAttribute('alt', name)
+    card.appendChild(image);
+
+    const title = document.createElement('p');
+    title.setAttribute('class', 'title');
+    card.appendChild(title);
+
+    const titlink = document.createElement('a');
+    const titurl = getUrl(data);
+    titlink.setAttribute('href', titurl);
+    titlink.textContent += name;
+    title.appendChild(titlink);
+
+    const org = document.createElement('p');
+    const orgname = getOrganization(data);
+    org.setAttribute('class', 'organization');
+    org.textContent += orgname;
+    card.appendChild(org);
+
+    const rating = document.createElement('div');
+    rating.setAttribute('class', 'rating');
+    card.appendChild(rating);
+    const aggRate = searchForKey(data, 'aggregateRating');
+    if(aggRate != undefined)
+    {
+      const avgRating = document.createElement('span');
+      let ratingValue = searchForKey(data, 'ratingValue');
+      avgRating.textContent += ratingValue;
+      rating.appendChild(avgRating);
+
+      const imgStar = document.createElement('img');
+      ratingValue = Math.round(ratingValue);
+      imgStar.setAttribute('src', 'https://raw.githubusercontent.com/brettbeat/Lab6_Starter/main/assets/images/icons/'+ratingValue+'-star.svg');
+      rating.appendChild(imgStar);
+
+      const numReviews = document.createElement('span');
+      const ratingCount = searchForKey(data, 'ratingCount');
+      numReviews.textContent += '(' + ratingCount + ')';
+      rating.appendChild(numReviews);
+    } else {
+      const noRating = document.createElement('span');
+      noRating.textContent += "No Reviews";
+      rating.appendChild(noRating);
+    }
+
+    const time = document.createElement('time');
+    let getTime = searchForKey(data, 'totalTime');
+    getTime = convertTime(getTime);
+    time.textContent += getTime;
+    card.appendChild(time);
+
+    const ingredients = document.createElement('p');
+    ingredients.setAttribute('class', 'ingredients');
+    let ingList = searchForKey(data, 'recipeIngredient');
+    ingList = createIngredientList(ingList);
+    ingredients.textContent += ingList;
+    card.appendChild(ingredients);
+
+    
 
     // Some functions that will be helpful here:
     //    document.createElement()
@@ -98,6 +163,8 @@ class RecipeCard extends HTMLElement {
 
     // Make sure to attach your root element and styles to the shadow DOM you
     // created in the constructor()
+    this.shadowRoot.appendChild(card);
+    this.shadowRoot.appendChild(styleElem);
 
     // Part 1 Expose - TODO
   }

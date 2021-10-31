@@ -24,12 +24,6 @@ async function init() {
     console.log('Recipe fetch unsuccessful');
     return;
   };
-  if(Object.keys(recipeData).length == recipes.length) {
-    resolve('Successfully fetched recipe data');
-  }
-  else {
-    reject('Error fetching recipe data');
-  }
   // Add the first three recipe cards to the page
   createRecipeCards();
   // Make the "Show more" button functional
@@ -46,16 +40,19 @@ async function fetchRecipes() {
     // the reject(false) function.
     for(let i = 0; i < recipes.length; i++ ) {
       fetch(recipes[i])
-        .then(response => {
-          recipeData[recipes[i]] = response.json();
-          console.log(recipeData[recipes[i]]); 
-          if(response.status >= 200 && response.status < 300) {
-            return Promise.resolve(response);
-          } else {
-            return Promise.reject('Error');
+        .then(response => response.json())
+        .then(data => {
+          recipeData[recipes[i]] = data;
+          console.log(data);
+          if(Object.keys(recipeData).length == recipes.length)
+          {
+            resolve(true);
           }
         })
-        .catch(error => {console.log('Error fetching recipe');});
+        .catch(err => {
+          console.log(err);
+          reject(false);
+        }); 
     }
     // For part 2 - note that you can fetch local files as well, so store any JSON files you'd like to fetch
     // in the recipes folder and fetch them from there. You'll need to add their paths to the recipes array.
@@ -70,7 +67,12 @@ function createRecipeCards() {
   // files with the recipeData Object above. Make sure you only display the 
   // three recipes we give you, you'll use the bindShowMore() function to
   // show any others you've added when the user clicks on the "Show more" button.
-
+  for(const recipe in recipeData) {
+    let newCard = document.createElement("recipe-card");
+    let main = document.querySelector("main");
+    newCard.data = recipeData[recipe];
+    main.appendChild(newCard);
+  }
   // Part 1 Expose - TODO
 }
 
