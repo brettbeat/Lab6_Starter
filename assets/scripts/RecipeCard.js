@@ -140,9 +140,11 @@ class RecipeCard extends HTMLElement {
 
     const time = document.createElement('time');
     let getTime = searchForKey(data, 'totalTime');
-    getTime = convertTime(getTime);
-    time.textContent += getTime;
-    card.appendChild(time);
+    if(getTime != undefined) {
+      getTime = convertTime(getTime);
+      time.textContent += getTime;
+      card.appendChild(time);
+    }
 
     const ingredients = document.createElement('p');
     ingredients.setAttribute('class', 'ingredients');
@@ -223,7 +225,7 @@ function getOrganization(data) {
   if (data.publisher?.name) return data.publisher?.name;
   if (data['@graph']) {
     for (let i = 0; i < data['@graph'].length; i++) {
-      if (data['@graph'][i]['@type'] == 'Organization') {
+      if (data['@graph'][i]['@type'] == 'Organization' || data['@graph'][i]['@type'] == 'WebSite') {
         return data['@graph'][i].name;
       }
     }

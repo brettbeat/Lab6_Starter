@@ -5,7 +5,10 @@
 const recipes = [
   'https://introweb.tech/assets/json/ghostCookies.json',
   'https://introweb.tech/assets/json/birthdayCake.json',
-  'https://introweb.tech/assets/json/chocolateChip.json'
+  'https://introweb.tech/assets/json/chocolateChip.json',
+  'assets/recipes/burrito.json',
+  'assets/recipes/curry.json',
+  'assets/recipes/soup.json'
 ];
 
 // Once all of the recipes that were specified above have been fetched, their
@@ -67,10 +70,10 @@ function createRecipeCards() {
   // files with the recipeData Object above. Make sure you only display the 
   // three recipes we give you, you'll use the bindShowMore() function to
   // show any others you've added when the user clicks on the "Show more" button.
-  for(const recipe in recipeData) {
+  for(let i = 0; i < 3; i++) {
     let newCard = document.createElement("recipe-card");
     let main = document.querySelector("main");
-    newCard.data = recipeData[recipe];
+    newCard.data = recipeData[recipes[i]];
     main.appendChild(newCard);
   }
   // Part 1 Expose - TODO
@@ -83,6 +86,29 @@ function bindShowMore() {
   // that were fetched. You should fetch every recipe in the beginning, whether you
   // display it or not, so you don't need to fetch them again. Simply access them
   // in the recipeData object where you stored them/
+  function clickHandler() {
+    clickCount++;
+    let main = document.querySelector("main");
+    if(clickCount % 2 != 0) {
+      for(let i = 3; i < recipes.length; i++) {
+        let newCard = document.createElement("recipe-card");
+        newCard.setAttribute('id', 'recipes['+i+']');
+        newCard.data = recipeData[recipes[i]];
+        main.appendChild(newCard);
+        button.textContent = "Show Less";
+      }
+    }
+    else {
+      for(let i = 3; i < recipes.length; i++) {
+        let removeCard = document.getElementById('recipes['+i+']');
+        main.removeChild(removeCard);
+      }
+      button.textContent = "Show More";
+    }
+  }
+  let button = document.querySelector("button");
+  button.addEventListener("click", clickHandler);
+  let clickCount = 0;
 
   // Part 2 Explore - TODO
 }
