@@ -86,16 +86,17 @@ function bindShowMore() {
   // that were fetched. You should fetch every recipe in the beginning, whether you
   // display it or not, so you don't need to fetch them again. Simply access them
   // in the recipeData object where you stored them/
-  function clickHandler() {
-    clickCount++;
+  let showButton = document.querySelector("button");
+
+  showButton.addEventListener("click", function() {
     let main = document.querySelector("main");
-    if(clickCount % 2 != 0) {
+    if(showButton.textContent == "Show more") {
       for(let i = 3; i < recipes.length; i++) {
         let newCard = document.createElement("recipe-card");
         newCard.setAttribute('id', 'recipes['+i+']');
         newCard.data = recipeData[recipes[i]];
         main.appendChild(newCard);
-        button.textContent = "Show Less";
+        showButton.textContent = "Show Less";
       }
     }
     else {
@@ -103,12 +104,9 @@ function bindShowMore() {
         let removeCard = document.getElementById('recipes['+i+']');
         main.removeChild(removeCard);
       }
-      button.textContent = "Show More";
+      showButton.textContent = "Show More";
     }
-  }
-  let button = document.querySelector("button");
-  button.addEventListener("click", clickHandler);
-  let clickCount = 0;
+  });
 
   // Part 2 Explore - TODO
 }
